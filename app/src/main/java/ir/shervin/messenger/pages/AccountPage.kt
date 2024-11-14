@@ -1,12 +1,19 @@
 package ir.shervin.messenger.pages
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -27,6 +34,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,11 +49,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import ir.shervin.messenger.R
+import ir.shervin.messenger.applyIf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountPage(navController: NavHostController) {
 	val premiumColor = if (isSystemInDarkTheme()) Color(0xFF00695C) else Color(0xFF4DB6AC)
+	var isOpen by remember { mutableStateOf(false) }
+	val rotateDegree by animateFloatAsState(if (isOpen) -90f else 90f)
+	var imageUri by remember { mutableStateOf(null as Uri?) }
+	val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
+		imageUri = it
+	} // TODO
 	
 	Scaffold(
 		topBar = {
@@ -58,7 +76,7 @@ fun AccountPage(navController: NavHostController) {
 						}
 					},
 					actions = {
-						IconButton(onClick = {}) {
+						IconButton(onClick = { navController.navigate("edit-account") }) {
 							Icon(Icons.Rounded.Edit, null)
 						}
 						IconButton(onClick = {}) {
@@ -77,6 +95,9 @@ fun AccountPage(navController: NavHostController) {
 						modifier = Modifier
 							.clip(CircleShape)
 							.size(85.dp)
+							.clickable {
+							
+							}
 					)
 					
 					Column(
@@ -87,11 +108,13 @@ fun AccountPage(navController: NavHostController) {
 					
 					Spacer(Modifier.weight(1f))
 					
-					IconButton(onClick = {}) {
+					IconButton(onClick = {
+						isOpen = !isOpen
+					}) {
 						Icon(
 							Icons.Rounded.ArrowBackIosNew,
 							null,
-							modifier = Modifier.rotate(-90f)
+							modifier = Modifier.rotate(rotateDegree)
 						)
 					}
 				}
@@ -102,27 +125,35 @@ fun AccountPage(navController: NavHostController) {
 			modifier = Modifier
 				.padding(contentPadding)
 		) {
-			Row(
-				verticalAlignment = Alignment.CenterVertically,
+			Column(
 				modifier = Modifier
-					.background(premiumColor.copy(alpha = 0.3f))
-					.padding(horizontal = 40.dp, vertical = 16.dp)
-					.fillMaxWidth()
+					.animateContentSize()
+					.applyIf(!isOpen) {
+						height(0.dp)
+					}
 			) {
-				Icon(Icons.Rounded.AccountCircle, null)
-				Spacer(Modifier.width(16.dp))
-				Text("Jane", fontSize = 20.sp)
-			}
-			Row(
-				verticalAlignment = Alignment.CenterVertically,
-				modifier = Modifier
-					.background(premiumColor.copy(alpha = 0.3f))
-					.padding(horizontal = 40.dp, vertical = 16.dp)
-					.fillMaxWidth()
-			) {
-				Icon(Icons.Rounded.AccountCircle, null)
-				Spacer(Modifier.width(16.dp))
-				Text("Roya", fontSize = 20.sp)
+				Row(
+					verticalAlignment = Alignment.CenterVertically,
+					modifier = Modifier
+						.background(premiumColor.copy(alpha = 0.3f))
+						.padding(horizontal = 40.dp, vertical = 16.dp)
+						.fillMaxWidth()
+				) {
+					Icon(Icons.Rounded.AccountCircle, null)
+					Spacer(Modifier.width(16.dp))
+					Text("Jane", fontSize = 20.sp)
+				}
+				Row(
+					verticalAlignment = Alignment.CenterVertically,
+					modifier = Modifier
+						.background(premiumColor.copy(alpha = 0.3f))
+						.padding(horizontal = 40.dp, vertical = 16.dp)
+						.fillMaxWidth()
+				) {
+					Icon(Icons.Rounded.AccountCircle, null)
+					Spacer(Modifier.width(16.dp))
+					Text("Roya", fontSize = 20.sp)
+				}
 			}
 			
 			Text(
