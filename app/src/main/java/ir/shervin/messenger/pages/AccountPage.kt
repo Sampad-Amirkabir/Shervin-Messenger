@@ -48,6 +48,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
 import ir.shervin.messenger.R
 import ir.shervin.messenger.applyIf
 
@@ -60,7 +61,7 @@ fun AccountPage(navController: NavHostController) {
 	var imageUri by remember { mutableStateOf(null as Uri?) }
 	val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
 		imageUri = it
-	} // TODO
+	}
 	
 	Scaffold(
 		topBar = {
@@ -79,7 +80,7 @@ fun AccountPage(navController: NavHostController) {
 						IconButton(onClick = { navController.navigate("edit-account") }) {
 							Icon(Icons.Rounded.Edit, null)
 						}
-						IconButton(onClick = {}) {
+						IconButton(onClick = { navController.navigate("add-account") }) {
 							Icon(Icons.Rounded.Add, null)
 						}
 					}
@@ -90,13 +91,13 @@ fun AccountPage(navController: NavHostController) {
 					verticalAlignment = Alignment.CenterVertically
 				) {
 					Image(
-						painterResource(R.drawable.app_icon),
+						painter = rememberAsyncImagePainter(imageUri ?: R.drawable.app_icon),
 						null,
 						modifier = Modifier
 							.clip(CircleShape)
 							.size(85.dp)
 							.clickable {
-							
+								launcher.launch("image/*")
 							}
 					)
 					

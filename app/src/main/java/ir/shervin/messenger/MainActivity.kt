@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import ir.shervin.messenger.pages.AccountPage
 import ir.shervin.messenger.pages.AddAccountPage
+import ir.shervin.messenger.pages.ChatPage
 import ir.shervin.messenger.pages.EditAccountPage
 import ir.shervin.messenger.pages.MainPage
 import ir.shervin.messenger.pages.PhoneNumberPage
@@ -33,7 +34,7 @@ class MainActivity : ComponentActivity() {
 private fun MainComponent() {
 	val navController = rememberNavController()
 	
-	NavHost(navController, "add-account") {
+	NavHost(navController, "welcome") {
 		composable("welcome") {
 			WelcomePage(navController)
 		}
@@ -60,6 +61,10 @@ private fun MainComponent() {
 		
 		composable("add-account") {
 			AddAccountPage(navController)
+		}
+		
+		composable("chat") {
+			ChatPage(navController)
 		}
 	}
 }
